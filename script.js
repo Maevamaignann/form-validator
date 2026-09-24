@@ -127,7 +127,7 @@ togglePasswordButtons.forEach(function(button) {
 
 // Vérifie si l'utilisateur est majeur
 function estMajeur(age) {
-  if (age = 18) {
+  if (age >= 18) {
     return true
   }
   return false;
