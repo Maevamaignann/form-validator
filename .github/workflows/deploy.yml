@@ -1,0 +1,51 @@
+# Publie le site statique sur GitHub Pages après chaque modification de main.
+name: Déployer le site sur GitHub Pages
+
+# Lance le workflow lors d'un push sur main ou à la demande depuis GitHub.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Accorde uniquement les droits nécessaires à la lecture du code et au déploiement Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Évite que plusieurs déploiements concurrents se remplacent mutuellement.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Prépare puis publie les fichiers statiques du projet.
+  deploy:
+    # Utilise une machine virtuelle Ubuntu fournie par GitHub.
+    runs-on: ubuntu-latest
+
+    # Associe le job à l'environnement GitHub Pages et expose l'URL publiée.
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Récupère le contenu du dépôt pour construire l'artefact à publier.
+      - name: Récupérer le code source
+        uses: actions/checkout@v4
+
+      # Configure les paramètres nécessaires au déploiement GitHub Pages.
+      - name: Configurer GitHub Pages
+        uses: actions/configure-pages@v5
+
+      # Assemble les fichiers statiques du dépôt dans un artefact Pages.
+      - name: Préparer l'artefact du site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      # Déploie l'artefact sur GitHub Pages.
+      - name: Publier sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
