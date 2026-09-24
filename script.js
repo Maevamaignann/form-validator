@@ -123,3 +123,12 @@ togglePasswordButtons.forEach(function(button) {
     button.innerText = isHidden ? 'Masquer' : 'Afficher';
   });
 });
+
+
+// Vérifie si l'utilisateur est majeur
+function estMajeur(age) {
+  if (age >= 18) {
+    return true
+  }
+  return false;
+}
